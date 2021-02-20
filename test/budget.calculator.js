@@ -10,12 +10,15 @@ module.exports = class BudgetCalculator {
         let filteredBudget = this.filterBudget(allBudget, startDay, endDay, false);
         let budgetMap = this.budgetMap(filteredBudget);
         let total = 0;
+        if (startDay.isAfter(endDay)) {
+            return 0;
+        }
         if (startDay.month() === endDay.month()) {
-            return budgetMap[startDay.format('YYYYMM')] * (endDay.diff(startDay, 'day') + 1) / startDay.daysInMonth();
+            return this.getBudgetValue(budgetMap, startDay) * (endDay.diff(startDay, 'day') + 1) / startDay.daysInMonth();
         }
         const startMonthBudget = (startDay.endOf('month').diff(startDay, 'day') + 1)
-            * budgetMap[startDay.format('YYYYMM')] / startDay.daysInMonth();
-        const endMonthDayBudget = endDay.date() * budgetMap[endDay.format('YYYYMM')] / endDay.daysInMonth();
+            * this.getBudgetValue(budgetMap, startDay) / startDay.daysInMonth();
+        const endMonthDayBudget = endDay.date() * this.getBudgetValue(budgetMap, endDay) / endDay.daysInMonth();
         total += startMonthBudget;
         total += endMonthDayBudget;
         filteredBudget = this.filterBudget(allBudget, startDay, endDay, true);
@@ -25,6 +28,9 @@ module.exports = class BudgetCalculator {
         return total;
     }
 
+    getBudgetValue(budgetMap, day) {
+        return budgetMap[day.format('YYYYMM')] || 0;
+    }
 
     filterBudget(allBudget, startDay, endDay, exclusive) {
         return filter(allBudget, ({yearMonth}) => {

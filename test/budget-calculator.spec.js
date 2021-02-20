@@ -95,4 +95,45 @@ describe('budget calculator', function () {
         ]);
         expect(budgetCalculator.query(startDay, endDay)).toBe(2282);
     });
+    it('miss end month data', function () {
+        let budgetCalculator = new BudgetCalculator();
+        const [startDay, endDay] = setInterval('20210130', '20210302');
+        mockBudgetRepo.mockReturnValue([
+            {
+                yearMonth: '202101',
+                amount: 31
+            },
+            {
+                yearMonth: '202102',
+                amount: 280
+            }
+        ]);
+        expect(budgetCalculator.query(startDay, endDay)).toBe(282);
+    });
+    it('miss start month data', function () {
+        let budgetCalculator = new BudgetCalculator();
+        const [startDay, endDay] = setInterval('20210130', '20210302');
+        mockBudgetRepo.mockReturnValue([
+            {
+                yearMonth: '202102',
+                amount: 280
+            },
+            {
+                yearMonth: '202103',
+                amount: 31000
+            }
+        ]);
+        expect(budgetCalculator.query(startDay, endDay)).toBe(2280);
+    });
+    it('start day is later than end day', function () {
+        let budgetCalculator = new BudgetCalculator();
+        const [startDay, endDay] = setInterval('20210104', '20210102');
+        mockBudgetRepo.mockReturnValue([
+            {
+                yearMonth: '202101',
+                amount: 31
+            },
+        ]);
+        expect(budgetCalculator.query(startDay, endDay)).toBe(0);
+    });
 });
