@@ -13,7 +13,7 @@ module.exports = class BudgetCalculator {
         if (startDay.isAfter(endDay)) {
             return 0;
         }
-        if (startDay.month() === endDay.month()) {
+        if (this.isSameMonth(startDay, endDay)) {
             return this.getBudgetValue(budgetMap, startDay) * (endDay.diff(startDay, 'day') + 1) / startDay.daysInMonth();
         }
         const startMonthBudget = (startDay.endOf('month').diff(startDay, 'day') + 1)
@@ -26,6 +26,10 @@ module.exports = class BudgetCalculator {
             total += budget.amount;
         });
         return total;
+    }
+
+    isSameMonth(startDay, endDay) {
+        return startDay.isSame(endDay, 'year') && startDay.isSame(endDay, 'month');
     }
 
     getBudgetValue(budgetMap, day) {
