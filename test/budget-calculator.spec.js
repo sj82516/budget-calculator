@@ -76,4 +76,23 @@ describe('budget calculator', function () {
         ]);
         expect(budgetCalculator.query(startDay, endDay)).toBe(201);
     });
+    it('cross full month', function () {
+        let budgetCalculator = new BudgetCalculator();
+        const [startDay, endDay] = setInterval('20210130', '20210302');
+        mockBudgetRepo.mockReturnValue([
+            {
+                yearMonth: '202101',
+                amount: 31
+            },
+            {
+                yearMonth: '202102',
+                amount: 280
+            },
+            {
+                yearMonth: '202103',
+                amount: 31000
+            }
+        ]);
+        expect(budgetCalculator.query(startDay, endDay)).toBe(2282);
+    });
 });

@@ -25,6 +25,7 @@ module.exports = class BudgetCalculator {
         return total;
     }
 
+
     filterBudget(allBudget, startDay, endDay, exclusive) {
         return filter(allBudget, ({yearMonth}) => {
             return dayjs(yearMonth).isBetween(startDay.format('YYYYMM'), endDay.format('YYYYMM'), null, exclusive ? '()' : '[]');
